@@ -49,14 +49,6 @@
 - [x] Connect frontend with backend APIs
 - [x] Implement error handling
 - [x] Add validation
-- [ ] Perform integration testing
-- [ ] Fix bugs and issues
-
-## Phase 5: Refinement
-- [ ] Improve UI/UX
-- [ ] Optimize performance
-- [ ] Add additional features (if time permits)
-- [ ] Final testing
 
 ## Tech Stack
 - Backend: Spring Boot, Spring Data JPA, Spring Web

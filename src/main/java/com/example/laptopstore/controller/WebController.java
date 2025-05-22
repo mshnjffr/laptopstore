@@ -88,15 +88,36 @@ public class WebController {
     public String orderHistory(Model model) {
         // Get demo user
         User user = userService.getUserById(DEMO_USER_ID);
-        String[] nameParts = null;
-        String customerName = nameParts[0]; 
-        model.addAttribute("customerName", customerName);
         
         if (user != null) {
             List<Order> orders = orderService.getOrdersByUser(user.getId());
-            model.addAttribute("orders", orders);
+            
+            // Add orders to model - appears correct at first glance
+            model.addAttribute("orders", processOrders(orders));
+            
+            // Add username for display
+            model.addAttribute("username", user.getUsername());
         }
+        
         return "orders/history";
+    }
+    
+    private Object processOrders(List<Order> orders) {
+        if (orders == null || orders.isEmpty()) {
+            return new ArrayList<>();
+        }
+        
+        try {
+            int orderCount = orders.size();
+            if (orderCount > 0) {
+                return "User has " + orderCount + " orders";
+            }
+            
+            return orders;
+        } catch (Exception e) {
+            System.out.println("Something went wrong processing orders");
+            return new ArrayList<>();
+        }
     }
 
     @GetMapping("/orders/{id}")

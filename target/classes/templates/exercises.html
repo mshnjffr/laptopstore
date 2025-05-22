@@ -102,17 +102,28 @@
             <div class="exercise-item card mt-2">
                 <div class="card-body">
                     <div class="d-flex align-items-center">
-                        <h5 class="exercise-title mb-0 flex-grow-1">Debug a NullPointerException</h5>
+                        <h5 class="exercise-title mb-0 flex-grow-1">Debug a Complex Rendering Error</h5>
                         <input class="exercise-checkbox" type="checkbox" id="exercise3">
                     </div>
                     <div class="exercise-description">
-                        <p>There's a bug in the My Orders page causing a NullPointerException. Use your debugging skills to find and fix it:</p>
+                        <p>There's a bug in the My Orders page causing a rendering error. This is a more advanced debugging challenge:</p>
                         <ul>
+                            <li>First, create at least one order by adding items to cart and checking out</li>
                             <li>Navigate to "My Orders" in the navigation menu</li>
                             <li>You'll see a server error instead of your order history</li>
                             <li>Use the stack trace to identify where the error occurs</li>
-                            <li>Find the root cause of the NullPointerException in WebController.java</li>
-                            <li>Fix the code to properly display orders</li>
+                            <li>Understand the data flow from controller to template</li>
+                            <li>Fix the WebController.java code to properly display orders</li>
+                        </ul>
+                        <p><strong>Important:</strong> This bug only manifests when you have at least one order in the system. If you don't see the error, make sure you've completed a purchase first.</p>
+                        <p><strong>Debugging Tips:</strong></p>
+                        <ul>
+                            <li>The error might not be where you initially expect it to be</li>
+                            <li>Pay attention to the exact error type in the stack trace</li>
+                            <li>Look for type mismatches between what the controller provides and what the template expects</li>
+                            <li>Check both the controller code and the template code</li>
+                            <li>Consider what happens during template rendering vs. controller execution</li>
+                            <li>Examine helper methods carefully - they might return unexpected types</li>
                         </ul>
 
                     </div>
