@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>Laptops - Laptop Store</title>
+</head>
+<body>
+    <section>
+        <h1 class="mb-4">Laptops</h1>
+
+        <!-- Search Form -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form th:action="@{/laptops}" method="get" class="row g-3">
+                    <div class="col-md-6">
+                        <label for="keyword" class="form-label">Search</label>
+                        <input type="text" class="form-control" id="keyword" name="keyword" th:value="${keyword}"
+                            placeholder="Search by brand, model, or description...">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="brand" class="form-label">Brand</label>
+                        <select class="form-select" id="brand" name="brand">
+                            <option value="">All Brands</option>
+                            <option value="Apple" th:selected="${brand == 'Apple'}">Apple</option>
+                            <option value="Dell" th:selected="${brand == 'Dell'}">Dell</option>
+                            <option value="HP" th:selected="${brand == 'HP'}">HP</option>
+                            <option value="Lenovo" th:selected="${brand == 'Lenovo'}">Lenovo</option>
+                            <option value="ASUS" th:selected="${brand == 'ASUS'}">ASUS</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">Search</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Results -->
+        <div class="row row-cols-1 row-cols-md-3 g-4" th:if="${!laptops.empty}">
+            <div class="col" th:each="laptop : ${laptops}">
+                <div class="card h-100 laptop-card">
+                    <div class="text-center pt-3">
+                        <div class="laptop-image-container">
+                            <img th:src="${laptop.imagePath}" class="card-img-top" alt="Laptop Image">
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${laptop.brand + ' ' + laptop.model}">Laptop Name</h5>
+                        <p class="card-text" th:text="${#strings.abbreviate(laptop.description, 100)}">Description</p>
+                        <p class="fw-bold" th:text="'$' + ${laptop.price}">$1299.99</p>
+                        <div class="d-flex justify-content-between">
+                            <a th:href="@{/laptops/{id}(id=${laptop.id})}" class="btn btn-outline-primary">View Details</a>
+                            <button class="btn btn-success add-to-cart-btn" th:data-id="${laptop.id}" th:data-brand="${laptop.brand}" th:data-model="${laptop.model}" th:data-price="${laptop.price}">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- No Results -->
+        <div class="alert alert-info" th:if="${laptops.empty}">
+            <p>No laptops found matching your criteria. Try different search terms or <a th:href="@{/laptops}">view all laptops</a>.</p>
+        </div>
+        
+        <!-- Success Alert (Hidden by default) -->
+        <div class="alert alert-success fixed-bottom m-3" style="display: none; max-width: 400px; right: 0; left: auto;" id="addedToCartAlert">
+            Item added to cart successfully! <a th:href="@{/cart}" class="alert-link">View Cart</a>
+        </div>
+        
+        <!-- Cart functionality with JavaScript -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Add to cart buttons
+                const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+                addToCartButtons.forEach(button => {
+                    button.addEventListener('click', function() {
+                        // Get laptop data from data attributes
+                        const laptopId = Number(this.getAttribute('data-id'));
+                        const brand = this.getAttribute('data-brand');
+                        const model = this.getAttribute('data-model');
+                        const price = Number(this.getAttribute('data-price'));
+                        const imagePath = this.closest('.laptop-card').querySelector('.laptop-image-container img:not([style*="display: none"])').src;
+                        
+                        // Initialize cart from localStorage
+                        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+                        
+                        // Check if laptop is already in cart
+                        const existingItem = cart.find(item => item.id === laptopId);
+                        if (existingItem) {
+                            existingItem.quantity += 1;
+                            existingItem.subtotal = existingItem.quantity * existingItem.price;
+                        } else {
+                            // Add new item to cart
+                            cart.push({
+                                id: laptopId,
+                                brand: brand,
+                                model: model,
+                                price: price,
+                                imagePath: imagePath,
+                                quantity: 1,
+                                subtotal: price
+                            });
+                        }
+                        
+                        // Save to localStorage
+                        localStorage.setItem('cart', JSON.stringify(cart));
+                        
+                        // Update cart count in nav bar
+                        const cartCount = document.getElementById('cartCount');
+                        if (cartCount) {
+                            const itemCount = cart.reduce((total, item) => total + item.quantity, 0);
+                            cartCount.textContent = itemCount;
+                            cartCount.style.display = itemCount > 0 ? 'inline-block' : 'none';
+                        }
+                        
+                        // Show success message
+                        const alert = document.getElementById('addedToCartAlert');
+                        alert.style.display = 'block';
+                        
+                        // Hide success message after 3 seconds
+                        setTimeout(function() {
+                            alert.style.display = 'none';
+                        }, 3000);
+                        
+                        console.log('Added to cart:', { id: laptopId, brand, model, price, quantity: 1 });
+                    });
+                });
+            });
+        </script>
+    </section>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>Order Details - Laptop Store</title>
+</head>
+<body>
+    <section>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+                <li class="breadcrumb-item"><a th:href="@{/orders}">My Orders</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Order #<span th:text="${order.id}">123</span></li>
+            </ol>
+        </nav>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">Order #<span th:text="${order.id}">123</span></h4>
+                    <span class="badge" th:class="${'badge bg-' + (order.status.name() == 'PENDING' ? 'warning' : 
+                                                                order.status.name() == 'CONFIRMED' ? 'info' : 
+                                                                order.status.name() == 'SHIPPED' ? 'primary' : 
+                                                                order.status.name() == 'DELIVERED' ? 'success' : 'danger')}"
+                          th:text="${order.status}">PENDING</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Order Information</h5>
+                        <p>
+                            <strong>Order Date:</strong> <span th:text="${#temporals.format(order.orderDate, 'MMM dd, yyyy HH:mm')}">Jan 1, 2025 12:00</span><br>
+                            <strong>Status:</strong> <span th:text="${order.status}">PENDING</span><br>
+                            <strong>Payment Method:</strong> <span th:text="${order.paymentMethod != null ? order.paymentMethod : 'Credit Card'}">Credit Card</span>
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Shipping Information</h5>
+                        <p>
+                            <strong>Address:</strong> <span th:text="${order.shippingAddress != null ? order.shippingAddress : 'Default Address'}">123 Main St, Anytown, USA</span><br>
+                            <strong>Tracking Number:</strong> <span th:text="${order.trackingNumber != null ? order.trackingNumber : 'Not yet available'}">Not yet available</span>
+                        </p>
+                    </div>
+                </div>
+
+                <h5 class="mt-4">Order Items</h5>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Item</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="item : ${order.orderItems}">
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <img th:if="${item.laptop.brand == 'Apple'}" src="/images/macbook-air.jpg" width="50" height="50" class="me-2" alt="Product Image">
+                                        <img th:if="${item.laptop.brand == 'Dell'}" src="/images/dell-xps.jpg" width="50" height="50" class="me-2" alt="Product Image">
+                                        <img th:if="${item.laptop.brand == 'HP'}" src="/images/hp-spectre.jpg" width="50" height="50" class="me-2" alt="Product Image">
+                                        <img th:if="${item.laptop.brand != 'Apple' && item.laptop.brand != 'Dell' && item.laptop.brand != 'HP'}" src="https://via.placeholder.com/50x50" class="me-2" alt="Product Image">
+                                        <div>
+                                            <a th:href="@{/laptops/{id}(id=${item.laptop.id})}" th:text="${item.laptop.brand + ' ' + item.laptop.model}">Laptop Name</a>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td th:text="'$' + ${item.unitPrice}">$1299.99</td>
+                                <td th:text="${item.quantity}">1</td>
+                                <td th:text="'$' + ${item.subtotal}">$1299.99</td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3" class="text-end"><strong>Subtotal:</strong></td>
+                                <td th:text="'$' + ${order.totalAmount}">$1299.99</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="text-end"><strong>Shipping:</strong></td>
+                                <td>$10.00</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="text-end"><strong>Tax:</strong></td>
+                                <td>$104.00</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="text-end"><strong>Total:</strong></td>
+                                <td><strong th:text="'$' + ${order.totalAmount + 114.00}">$1413.99</strong></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <div class="d-flex gap-2">
+            <a th:href="@{/orders}" class="btn btn-outline-primary">Back to Orders</a>
+            <button class="btn btn-outline-secondary" disabled>Request Return</button>
+        </div>
+    </section>
+</body>
+</html>

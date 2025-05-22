@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head>
+    <title th:text="${laptop.brand + ' ' + laptop.model} + ' - Laptop Store'">Laptop Details - Laptop Store</title>
+</head>
+<body>
+    <section>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+                <li class="breadcrumb-item"><a th:href="@{/laptops}">Laptops</a></li>
+                <li class="breadcrumb-item active" aria-current="page" th:text="${laptop.brand + ' ' + laptop.model}">Laptop Name</li>
+            </ol>
+        </nav>
+
+        <div class="row">
+            <!-- Laptop Image -->
+            <div class="col-md-5 mb-4">
+                <div class="text-center border rounded p-3">
+                    <img th:src="${laptop.imagePath}" class="img-fluid" alt="Laptop Image" style="max-height: 250px; width: auto;">
+                </div>
+            </div>
+
+            <!-- Laptop Info -->
+            <div class="col-md-7 mb-4">
+                <h1 th:text="${laptop.brand + ' ' + laptop.model}">Laptop Name</h1>
+                <p class="lead" th:text="${laptop.description}">Laptop description goes here.</p>
+                
+                <div class="my-4">
+                    <h2 class="fw-bold text-primary" th:text="'$' + ${laptop.price}">$1299.99</h2>
+                    
+                    <!-- Hidden fields for laptop data -->
+                    <input type="hidden" id="laptopId" th:value="${laptop.id}">
+                    <input type="hidden" id="laptopBrand" th:value="${laptop.brand}">
+                    <input type="hidden" id="laptopModel" th:value="${laptop.model}">
+                    <input type="hidden" id="laptopPrice" th:value="${laptop.price}">
+                    
+                    <div class="d-flex gap-2 mt-3">
+                        <button class="btn btn-primary btn-lg" id="addToCartBtn">Add to Cart</button>
+                        <button class="btn btn-outline-secondary btn-lg">Add to Wishlist</button>
+                    </div>
+                    
+                    <div class="alert alert-success mt-3" style="display: none;" id="addedToCartAlert">
+                        Added to cart successfully! <a th:href="@{/cart}" class="alert-link">View Cart</a>
+                    </div>
+                </div>
+                
+                <hr>
+                
+                <!-- Specifications -->
+                <h4>Specifications</h4>
+                <table class="table table-striped">
+                    <tbody>
+                        <tr>
+                            <th scope="row">Processor</th>
+                            <td th:text="${laptop.processor}">Intel Core i7</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">RAM</th>
+                            <td th:text="${laptop.ram}">16GB</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Storage</th>
+                            <td th:text="${laptop.storage}">512GB SSD</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Display Size</th>
+                            <td th:text="${laptop.displaySize}">15.6-inch</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Resolution</th>
+                            <td th:text="${laptop.resolution}">1920 x 1080</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Graphics Card</th>
+                            <td th:text="${laptop.graphicsCard}">NVIDIA GeForce RTX 3060</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Operating System</th>
+                            <td th:text="${laptop.operatingSystem}">Windows 11</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Weight</th>
+                            <td th:text="${laptop.weight}">2.2 kg</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Dimensions</th>
+                            <td th:text="${laptop.dimensions}">358 x 248 x 19.9 mm</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Battery Life</th>
+                            <td th:text="${laptop.batteryLife}">Up to a 8 hours</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Color</th>
+                            <td th:text="${laptop.color}">Silver</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Cart functionality with JavaScript -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                document.getElementById('addToCartBtn').addEventListener('click', function() {
+                    // Get laptop data from hidden fields
+                    const laptopId = Number(document.getElementById('laptopId').value);
+                    const brand = document.getElementById('laptopBrand').value;
+                    const model = document.getElementById('laptopModel').value;
+                    const price = Number(document.getElementById('laptopPrice').value);
+                    const imagePath = document.querySelector('.img-fluid').getAttribute('src');
+                    
+                    // Initialize cart from localStorage if available
+                    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+                    
+                    // Check if laptop is already in cart
+                    const existingItem = cart.find(item => item.id === laptopId);
+                    if (existingItem) {
+                        existingItem.quantity += 1;
+                        existingItem.subtotal = existingItem.quantity * existingItem.price;
+                    } else {
+                        // Add new item to cart
+                        cart.push({
+                            id: laptopId,
+                            brand: brand,
+                            model: model,
+                            price: price,
+                            imagePath: imagePath,
+                            quantity: 1,
+                            subtotal: price
+                        });
+                    }
+                    
+                    // Save to localStorage
+                    localStorage.setItem('cart', JSON.stringify(cart));
+                    
+                    // Update cart count in nav bar manually
+                    const cartCount = document.getElementById('cartCount');
+                    if (cartCount) {
+                        const itemCount = cart.reduce((total, item) => total + item.quantity, 0);
+                        cartCount.textContent = itemCount;
+                        cartCount.style.display = itemCount > 0 ? 'inline-block' : 'none';
+                    }
+                    
+                    // Show success message
+                    document.getElementById('addedToCartAlert').style.display = 'block';
+                    
+                    // Hide success message after 3 seconds
+                    setTimeout(function() {
+                        document.getElementById('addedToCartAlert').style.display = 'none';
+                    }, 3000);
+                    
+                    console.log('Added to cart:', { id: laptopId, brand, model, price, quantity: 1 });
+                });
+            });
+        </script>
+    </section>
+</body>
+</html>

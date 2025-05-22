@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>Shopping Cart - Laptop Store</title>
+</head>
+<body>
+    <section>
+        <h1 class="mb-4">Shopping Cart</h1>
+
+        <!-- Empty Cart Message -->
+        <div id="emptyCart">
+            <div class="text-center p-5">
+                <i class="fas fa-shopping-cart fa-4x text-muted mb-3"></i>
+                <h3>Your cart is empty</h3>
+                <p class="lead">Add some laptops to your cart to get started!</p>
+                <a th:href="@{/laptops}" class="btn btn-primary mt-3">Browse Laptops</a>
+            </div>
+        </div>
+
+        <!-- Cart Items - This would normally be populated from the backend -->
+        <div id="cartContents" style="display: none;">
+            <div class="table-responsive">
+                <table class="table table-hover" id="cartTable">
+                    <thead>
+                        <tr>
+                            <th scope="col" width="50%">Product</th>
+                            <th scope="col" width="15%">Price</th>
+                            <th scope="col" width="15%">Quantity</th>
+                            <th scope="col" width="15%">Subtotal</th>
+                            <th scope="col" width="5%"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Cart items will be dynamically loaded from localStorage -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Order Information</h5>
+                            
+                            <!-- Error Alert (Hidden by default) -->
+                            <div class="alert alert-danger mb-3" id="checkoutErrorAlert" style="display: none;">
+                                <div id="errorMessageText">Please correct the errors below.</div>
+                            </div>
+                            
+                            <p>Default shipping address and payment method will be used.</p>
+                            <p class="text-muted">Note: Shipping and billing information will be handled in a later step.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Order Summary</h5>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Subtotal:</span>
+                                <span id="cartSubtotal">$0.00</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Shipping:</span>
+                                <span>$10.00</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Tax:</span>
+                                <span id="cartTax">$0.00</span>
+                            </div>
+                            <hr>
+                            <div class="d-flex justify-content-between mb-3 fw-bold">
+                                <span>Total:</span>
+                                <span id="cartTotal">$0.00</span>
+                            </div>
+                            <button class="btn btn-success w-100" id="checkoutBtn">Proceed to Checkout</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cart Management -->
+        <div class="mt-5">
+            <hr>
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <a th:href="@{/laptops}" class="btn btn-outline-primary me-2">Continue Shopping</a>
+                    <a th:href="@{/orders}" class="btn btn-outline-secondary">View Order History</a>
+                </div>
+                <button id="clearCart" class="btn btn-outline-danger">Clear Cart</button>
+            </div>
+        </div>
+        
+        <!-- Checkout Success Alert (Hidden by default) -->
+        <div class="alert alert-success alert-dismissible fade show fixed-bottom m-3" 
+             style="display: none; max-width: 500px; right: 0; left: auto;" id="checkoutSuccessAlert">
+            <strong>Order placed successfully!</strong> Your order has been submitted and is being processed.
+            <a th:href="@{/orders}" class="alert-link">View your order history</a>.
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <!-- JavaScript for Cart Functionality -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Initialize cart from localStorage
+                let cart = JSON.parse(localStorage.getItem('cart')) || [];
+                updateCartDisplay();
+                
+                // No form input validation needed
+
+                // Clear cart button
+                document.getElementById('clearCart').addEventListener('click', function() {
+                    if (confirm('Are you sure you want to clear your cart?')) {
+                        cart = [];
+                        localStorage.setItem('cart', JSON.stringify(cart));
+                        updateCartDisplay();
+                    }
+                });
+
+                // Checkout button
+                document.getElementById('checkoutBtn').addEventListener('click', function() {
+                    // Hide any previous error messages
+                    document.getElementById('checkoutErrorAlert').style.display = 'none';
+                    
+                    // Check if cart is empty
+                    if (cart.length === 0) {
+                        document.getElementById('checkoutErrorAlert').style.display = 'block';
+                        document.getElementById('errorMessageText').innerText = 'Your cart is empty. Please add some products before checking out.';
+                        return;
+                    }
+                    
+                    // Prepare cart items for API
+                    const cartItems = cart.map(item => ({
+                        laptopId: item.id,
+                        quantity: item.quantity
+                    }));
+                    
+                    // Prepare order request - only need items now
+                    const orderRequest = {
+                        items: cartItems
+                    };
+                    
+                    // Show loading state
+                    const checkoutBtn = document.getElementById('checkoutBtn');
+                    const originalBtnText = checkoutBtn.innerHTML;
+                    checkoutBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...';
+                    checkoutBtn.disabled = true;
+                    
+                    // Log what we're sending to help debug
+                    console.log('Sending order:', JSON.stringify(orderRequest));
+                    
+                    // Send order to server
+                    fetch('/api/orders/create-from-cart', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'text/plain'
+                        },
+                        body: JSON.stringify(orderRequest)
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.text().then(text => { 
+                                console.error('Server returned error:', text);
+                                throw new Error(text);
+                            });
+                        }
+                        // Return text instead of trying to parse as JSON
+                        return response.text();
+                    })
+                    .then(responseText => {
+                        // Log the response for debugging
+                        console.log('Server response:', responseText);
+                        
+                        // Clear cart after successful checkout
+                        cart = [];
+                        localStorage.setItem('cart', JSON.stringify(cart));
+                        updateCartDisplay();
+                        
+                        // Show success message in the UI
+                        const successAlert = document.getElementById('checkoutSuccessAlert');
+                        successAlert.style.display = 'block';
+                        successAlert.innerHTML = `<strong>Order placed successfully!</strong> Thank you for your purchase. Your order has been submitted and is being processed. <a href="/orders" class="alert-link">View your order history</a>.<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
+                        
+                        // Reset button
+                        checkoutBtn.innerHTML = originalBtnText;
+                        checkoutBtn.disabled = false;
+                        
+                        // Automatically redirect after 3 seconds
+                        setTimeout(() => {
+                            window.location.href = '/orders';
+                        }, 3000);
+                    })
+                    .catch(error => {
+                        // Show error in the UI
+                        document.getElementById('checkoutErrorAlert').style.display = 'block';
+                        document.getElementById('errorMessageText').innerText = 'Error placing order: ' + error.message;
+                        
+                        // Scroll to the error message
+                        document.getElementById('checkoutErrorAlert').scrollIntoView({ behavior: 'smooth' });
+                        
+                        console.error('Error:', error);
+                        
+                        // Reset button
+                        checkoutBtn.innerHTML = originalBtnText;
+                        checkoutBtn.disabled = false;
+                    });
+                });
+
+                // Function to update cart display
+                function updateCartDisplay() {
+                    const emptyCart = document.getElementById('emptyCart');
+                    const cartContents = document.getElementById('cartContents');
+                    const cartTable = document.getElementById('cartTable').getElementsByTagName('tbody')[0];
+                    const cartSubtotal = document.getElementById('cartSubtotal');
+                    const cartTax = document.getElementById('cartTax');
+                    const cartTotal = document.getElementById('cartTotal');
+
+                    // Clear current table
+                    cartTable.innerHTML = '';
+
+                    if (cart.length === 0) {
+                        emptyCart.style.display = 'block';
+                        cartContents.style.display = 'none';
+                        return;
+                    }
+
+                    // Show cart and hide empty message
+                    emptyCart.style.display = 'none';
+                    cartContents.style.display = 'block';
+
+                    // Calculate totals
+                    let subtotal = 0;
+
+                    // Add items to table
+                    cart.forEach((item, index) => {
+                        subtotal += item.subtotal;
+
+                        const row = cartTable.insertRow();
+                        row.innerHTML = `
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <img src="${item.imagePath || '/images/laptop.jpg'}" class="me-2" 
+                                         style="width: 50px; height: 40px; object-fit: contain;" alt="${item.brand} ${item.model}">
+                                    <div>
+                                        <h6 class="mb-0">${item.brand} ${item.model}</h6>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>$${item.price.toFixed(2)}</td>
+                            <td>
+                                <div class="input-group input-group-sm">
+                                    <button class="btn btn-outline-secondary" type="button" onclick="updateQuantity(${index}, -1)">-</button>
+                                    <input type="text" class="form-control text-center" value="${item.quantity}" readonly>
+                                    <button class="btn btn-outline-secondary" type="button" onclick="updateQuantity(${index}, 1)">+</button>
+                                </div>
+                            </td>
+                            <td>$${item.subtotal.toFixed(2)}</td>
+                            <td><button class="btn btn-sm btn-outline-danger" onclick="removeItem(${index})"><i class="fas fa-trash"></i></button></td>
+                        `;
+                    });
+
+                    // Update totals
+                    const tax = subtotal * 0.08; // Assuming 8% tax
+                    const shipping = subtotal > 0 ? 10 : 0; // Flat shipping rate
+                    const total = subtotal + tax + shipping;
+
+                    cartSubtotal.textContent = `$${subtotal.toFixed(2)}`;
+                    cartTax.textContent = `$${tax.toFixed(2)}`;
+                    cartTotal.textContent = `$${total.toFixed(2)}`;
+                }
+
+                // Make these functions available globally for the buttons in the table
+                window.updateQuantity = function(index, change) {
+                    cart[index].quantity = Math.max(1, cart[index].quantity + change);
+                    cart[index].subtotal = cart[index].quantity * cart[index].price;
+                    localStorage.setItem('cart', JSON.stringify(cart));
+                    updateCartDisplay();
+                    
+                    // Update cart count in nav bar manually
+                    const cartCount = document.getElementById('cartCount');
+                    if (cartCount) {
+                        const itemCount = cart.reduce((total, item) => total + item.quantity, 0);
+                        cartCount.textContent = itemCount;
+                        cartCount.style.display = itemCount > 0 ? 'inline-block' : 'none';
+                    }
+                };
+
+                window.removeItem = function(index) {
+                    if (confirm('Remove this item from your cart?')) {
+                        cart.splice(index, 1);
+                        localStorage.setItem('cart', JSON.stringify(cart));
+                        updateCartDisplay();
+                        
+                        // Update cart count in nav bar manually
+                        const cartCount = document.getElementById('cartCount');
+                        if (cartCount) {
+                            const itemCount = cart.reduce((total, item) => total + item.quantity, 0);
+                            cartCount.textContent = itemCount;
+                            cartCount.style.display = itemCount > 0 ? 'inline-block' : 'none';
+                        }
+                    }
+                };
+            });
+        </script>
+    </section>
+</body>
+</html>

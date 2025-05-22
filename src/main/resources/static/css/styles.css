@@ -1,0 +1,39 @@
+/* Custom Styles for Laptop Store */
+
+/* Laptop card image containers */
+.laptop-image-container {
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.laptop-image-container img {
+    max-height: 200px;
+    max-width: 100%;
+    object-fit: contain;
+}
+
+/* Laptop details image container */
+.laptop-detail-image-container {
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.laptop-detail-image-container img {
+    max-height: 400px;
+    max-width: 100%;
+    object-fit: contain;
+}
+
+/* Card styling */
+.laptop-card {
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.laptop-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}

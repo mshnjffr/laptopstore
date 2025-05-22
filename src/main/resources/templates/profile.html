@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>My Profile - Laptop Store</title>
+</head>
+<body>
+    <section>
+        <h1 class="mb-4">My Profile</h1>
+
+        <div class="row">
+            <!-- Left Column - User Information -->
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Personal Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="profileForm">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="username" class="form-label">Username</label>
+                                    <input type="text" class="form-control" id="username" th:value="${user.username}" readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" th:value="${user.email}">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="firstName" class="form-label">First Name</label>
+                                    <input type="text" class="form-control" id="firstName" th:value="${user.firstName}">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="lastName" class="form-label">Last Name</label>
+                                    <input type="text" class="form-control" id="lastName" th:value="${user.lastName}">
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="address" class="form-label">Address</label>
+                                <textarea class="form-control" id="address" rows="2" th:text="${user.address}"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="phoneNumber" class="form-label">Phone Number</label>
+                                <input type="tel" class="form-control" id="phoneNumber" th:value="${user.phoneNumber}">
+                            </div>
+                            <div class="alert alert-success" id="updateSuccess" style="display: none;">
+                                Your profile has been updated successfully!
+                            </div>
+                            <button type="button" class="btn btn-primary" id="saveProfileBtn">Save Changes</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Account Info -->
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Account Summary</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Member Since:</strong> January, 2025</p>
+                        <p><strong>Account Type:</strong> Standard</p>
+                        <p><strong>Last Login:</strong> Today</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Account Actions</h5>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <a href="#" class="text-decoration-none">Change Password</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="#" class="text-decoration-none">Email Preferences</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="#" class="text-decoration-none">Privacy Settings</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- JavaScript for Demo Functionality -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                document.getElementById('saveProfileBtn').addEventListener('click', function() {
+                    // In a real app, this would send an AJAX request to update the profile
+                    // For demo purposes, we'll just show the success message
+                    document.getElementById('updateSuccess').style.display = 'block';
+                    
+                    // Hide after 3 seconds
+                    setTimeout(function() {
+                        document.getElementById('updateSuccess').style.display = 'none';
+                    }, 3000);
+                });
+            });
+        </script>
+    </section>
+</body>
+</html>

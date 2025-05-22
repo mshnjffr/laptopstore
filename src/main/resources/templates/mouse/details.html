@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head>
+    <title th:text="${mouse.brand + ' ' + mouse.model} + ' - Laptop Store'">Mouse Details - Laptop Store</title>
+    <style>
+        .mouse-img {
+            max-height: 300px;
+            width: auto;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <section>
+        <div class="row">
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+                    <li class="breadcrumb-item"><a th:href="@{/mouse}">Computer Mice</a></li>
+                    <li class="breadcrumb-item active" aria-current="page" th:text="${mouse.brand + ' ' + mouse.model}">Mouse Name</li>
+                </ol>
+            </nav>
+            
+            <!-- Mouse Image -->
+            <div class="col-md-5 text-center">
+                <div class="border rounded p-3 mb-3">
+                    <img th:src="${mouse.imagePath}" class="mouse-img img-fluid" alt="Mouse Image" style="max-height: 250px; width: auto;">
+                </div>
+                <div class="price-box bg-light p-3 mb-4 rounded">
+                    <h3 class="text-primary fw-bold" th:text="'$' + ${mouse.price}">$99.99</h3>
+                    <div class="d-flex gap-2 mt-3">
+                        <!-- Buttons to be implemented in Exercise #2 -->
+                        <button class="btn btn-primary btn-lg" id="addToCartBtn" disabled>Add to Cart</button>
+                        <button class="btn btn-outline-secondary btn-lg" disabled>Add to Wishlist</button>
+                    </div>
+                    <div class="alert alert-info mt-3">
+                        <small><i>Note: Add to Cart and Wishlist functionality to be implemented in Exercise #2</i></small>
+                    </div>
+                    <div class="alert alert-success mt-3" style="display: none;" id="addedToCartAlert">
+                        Added to cart successfully! <a th:href="@{/cart}" class="alert-link">View Cart</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Mouse Details -->
+            <div class="col-md-7">
+                <h1 th:text="${mouse.brand + ' ' + mouse.model}">Mouse Name</h1>
+                <p class="lead" th:text="${mouse.description}">Description</p>
+                
+                <!-- Hidden fields for mouse data (to be used in Exercise #2) -->
+                <input type="hidden" id="mouseId" th:value="${mouse.id}">
+                <input type="hidden" id="mouseBrand" th:value="${mouse.brand}">
+                <input type="hidden" id="mouseModel" th:value="${mouse.model}">
+                <input type="hidden" id="mousePrice" th:value="${mouse.price}">
+                
+                <!-- Specifications -->
+                <h4>Specifications</h4>
+                <table class="table table-striped">
+                    <tbody>
+                        <tr>
+                            <th scope="row">Brand</th>
+                            <td th:text="${mouse.brand}">Brand</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Model</th>
+                            <td th:text="${mouse.model}">Model</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Color</th>
+                            <td th:text="${mouse.color}">Color</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Connection Type</th>
+                            <td th:text="${mouse.connectionType}">Connection Type</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Weight</th>
+                            <td th:text="${mouse.weight}">Weight</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Dimensions</th>
+                            <td th:text="${mouse.dimensions}">Dimensions</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Battery Life</th>
+                            <td th:text="${mouse.batteryLife}">Battery Life</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Ergonomic</th>
+                            <td th:text="${mouse.ergonomic ? 'Yes' : 'No'}">Ergonomic</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">DPI</th>
+                            <td th:text="${mouse.dpi}">DPI</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Sensor</th>
+                            <td th:text="${mouse.sensor}">Sensor</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Polling Rate</th>
+                            <td th:text="${mouse.pollingRate + ' Hz'}">Polling Rate</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Buttons</th>
+                            <td th:text="${mouse.buttons}">Buttons</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">RGB Lighting</th>
+                            <td th:text="${mouse.rgbLighting ? 'Yes' : 'No'}">RGB Lighting</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Grip Type</th>
+                            <td th:text="${mouse.gripType}">Grip Type</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Exercise #2: Add cart functionality JavaScript here -->
+        <!-- For implementation reference, see: src/main/resources/templates/laptops/details.html -->
+        <!-- Implementation should:
+             1. Get mouse data from hidden fields
+             2. Add mouse to cart with a "type": "mouse" field to differentiate from laptops
+             3. Update cart count in navbar
+             4. Show success message
+        -->
+        <script>
+            // Exercise #2: Your cart implementation code will go here
+            // The buttons are currently disabled - remove the disabled attribute when implementing
+        </script>
+    </section>
+</body>
+</html>

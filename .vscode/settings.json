@@ -1,0 +1,11 @@
+{
+    "amp.commands.allowlist": [
+        "mvn spring-boot:run",
+        "mvn clean",
+        "mvn compile",
+        "java -jar target/laptop-store-0.0.1-SNAPSHOT.jar",
+        "curl -s http://localhost:8084/api/laptops",
+        "mv src/main/java/com/example/laptopstore/config/DataLoader.java.new src/main/java/com/example/laptopstore/config/DataLoader.java"
+    ],
+    "java.configuration.updateBuildConfiguration": "interactive"
+}

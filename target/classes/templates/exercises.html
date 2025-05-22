@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>Developer Exercises - Laptop Store</title>
+    <style>
+        .exercise-list {
+            margin-top: 20px;
+        }
+        .exercise-item {
+            border-bottom: 1px solid #eee;
+        }
+        .card-body {
+            padding: 0.75rem 1.25rem;
+        }
+        .exercise-item:last-child {
+            border-bottom: none;
+        }
+        .exercise-checkbox {
+            width: 1.4rem;
+            height: 1.4rem;
+            margin-left: 15px;
+        }
+        .exercise-title {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        .exercise-description {
+            margin-top: 0.5rem;
+            color: #555;
+        }
+        .exercise-description p {
+            margin-bottom: 0.5rem;
+        }
+        .mt-3 {
+            margin-top: 0.75rem !important;
+        }
+    </style>
+</head>
+<body>
+    <section>
+        <div class="row mb-4 justify-content-center">
+            <div class="col-md-8 text-center">
+                <h1>Cody Exercises</h1>
+                <p class="lead">Complete these exercises using Cody to learn more about this codebase.</p>
+                <p>Check the boxes when you complete an exercise to track your progress.</p>
+            </div>
+        </div>
+        
+        <div class="exercise-list row justify-content-center">
+            <div class="col-md-8">
+            <!-- Exercise 1 -->
+            <div class="exercise-item card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <h5 class="exercise-title mb-0 flex-grow-1">Understand the Codebase</h5>
+                        <input class="exercise-checkbox" type="checkbox" id="exercise1">
+                    </div>
+                    <div class="exercise-description">
+                        <p>Use Cody to explore and understand the codebase:</p>
+                        <ul>
+                            <li>Ask "What does the LaptopController do?"</li>
+                            <li>Ask "Where is the API endpoint to create an order?"</li>
+                            <li>Ask "How does the shopping cart feature work?"</li>
+                            <li>Ask "Explain the relationship between Order and OrderItem"</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Exercise 2 -->
+            <div class="exercise-item card mt-2">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <h5 class="exercise-title mb-0 flex-grow-1">Implement Cart and Wishlist for Mice</h5>
+                        <input class="exercise-checkbox" type="checkbox" id="exercise2">
+                    </div>
+                    <div class="exercise-description">
+                        <p>Add "Add to Cart" and "Add to Wishlist" functionality for computer mice:</p>
+                        <ul>
+                            <li>Implement JavaScript to add mice to the shopping cart</li>
+                            <li>Update the cart page to properly display mice items</li>
+                            <li>Add wishlist button functionality for mice products</li>
+                            <li>Store both laptops and mice in the same cart structure</li>
+                        </ul>
+                        <p><strong>Files to modify:</strong></p>
+                        <ul>
+                            <li>src/main/resources/templates/mouse/details.html - Add button handlers</li>
+                            <li>src/main/resources/templates/cart.html - Update to handle both product types</li>
+                        </ul>
+                        <p><strong>Implementation Tips:</strong></p>
+                        <ul>
+                            <li>Use the laptop details page as a reference (laptops/details.html)</li>
+                            <li>Add a "type" field to cart items to differentiate mice from laptops</li>
+                            <li>Include hidden fields for mouse ID, brand, model, and price</li>
+                            <li>Modify cart checkout process to handle both product types</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Exercise 3 -->
+            <div class="exercise-item card mt-2">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <h5 class="exercise-title mb-0 flex-grow-1">Debug a NullPointerException</h5>
+                        <input class="exercise-checkbox" type="checkbox" id="exercise3">
+                    </div>
+                    <div class="exercise-description">
+                        <p>There's a bug in the My Orders page causing a NullPointerException. Use your debugging skills to find and fix it:</p>
+                        <ul>
+                            <li>Navigate to "My Orders" in the navigation menu</li>
+                            <li>You'll see a server error instead of your order history</li>
+                            <li>Use the stack trace to identify where the error occurs</li>
+                            <li>Find the root cause of the NullPointerException in WebController.java</li>
+                            <li>Fix the code to properly display orders</li>
+                        </ul>
+
+                    </div>
+                </div>
+            </div>
+            
+
+            
+            <!-- Exercise 4 -->
+            <div class="exercise-item card mt-2">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <h5 class="exercise-title mb-0 flex-grow-1">Refactor DataLoader for Better Code Quality</h5>
+                        <input class="exercise-checkbox" type="checkbox" id="exercise4">
+                    </div>
+                    <div class="exercise-description">
+                        <p>The DataLoader class contains a lot of repetitive code. Refactor it to improve code quality:</p>
+                        <ul>
+                            <li>Identify code repetition in the loadLaptops() and loadMice() methods</li>
+                            <li>Refactor using design patterns like Builder or Factory Method</li>
+                            <li>Use helper methods to eliminate code duplication</li>
+                            <li>Maintain the same functionality while reducing code size</li>
+                            <li>Consider creating builder classes for both Laptop and Mouse</li>
+                        </ul>
+                        <p><strong>File to refactor:</strong> src/main/java/com/example/laptopstore/config/DataLoader.java</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Exercise 5 -->
+            <div class="exercise-item card mt-2">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <h5 class="exercise-title mb-0 flex-grow-1">Add a New Accessory Category</h5>
+                        <input class="exercise-checkbox" type="checkbox" id="exercise5">
+                    </div>
+                    <div class="exercise-description">
+                        <p>Implement a new accessory category (keyboards or headsets) following the same pattern as the Mouse implementation:</p>
+                        <ul>
+                            <li>Create a new model class with relevant properties (e.g., Keyboard with switch type, backlight, etc.)</li>
+                            <li>Implement the repository interface for the new accessory</li>
+                            <li>Create service layer for the accessory with CRUD operations</li>
+                            <li>Build REST API controller and web controller for the views</li>
+                            <li>Create list and details view templates</li>
+                            <li>Add sample data to the DataLoader class</li>
+                            <li>Update navigation to include the new accessory category</li>
+                        </ul>
+                        <p><strong>Reference Files:</strong></p>
+                        <ul>
+                            <li>Model - src/main/java/com/example/laptopstore/model/Mouse.java</li>
+                            <li>Repository - src/main/java/com/example/laptopstore/repository/MouseRepository.java</li>
+                            <li>Service - src/main/java/com/example/laptopstore/service/MouseService.java</li>
+                            <li>Controllers - MouseController.java and WebMouseController.java</li>
+                            <li>Views - src/main/resources/templates/mouse/list.html and details.html</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Exercise 6 -->
+            <div class="exercise-item card mt-2">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <h5 class="exercise-title mb-0 flex-grow-1">Add Unit and Integration Tests</h5>
+                        <input class="exercise-checkbox" type="checkbox" id="exercise6">
+                    </div>
+                    <div class="exercise-description">
+                        <p>Improve the test coverage of the application:</p>
+                        <ul>
+                            <li>Write unit tests for service layer methods</li>
+                            <li>Create integration tests for repositories</li>
+                            <li>Add API endpoint tests using MockMvc</li>
+                            <li>Set up test data fixtures</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+
+        </div>
+        
+        <!-- Add local storage to save checkbox state -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Load saved state
+                const checkboxes = document.querySelectorAll('.exercise-checkbox');
+                checkboxes.forEach(checkbox => {
+                    const isChecked = localStorage.getItem(checkbox.id) === 'true';
+                    checkbox.checked = isChecked;
+                    
+                    // Add event listener
+                    checkbox.addEventListener('change', function() {
+                        localStorage.setItem(this.id, this.checked);
+                    });
+                });
+            });
+        </script>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

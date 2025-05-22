@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>Home - Laptop Store</title>
+</head>
+<body>
+    <section>
+        <!-- Hero Section -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="p-5 mb-4 bg-light rounded-3">
+                    <div class="container-fluid py-5">
+                        <h1 class="display-5 fw-bold">Welcome to Laptop Store</h1>
+                        <p class="fs-4">Find the perfect laptop for your needs. From budget-friendly options to high-end gaming machines.</p>
+                        <a th:href="@{/laptops}" class="btn btn-primary btn-lg">Browse Laptops</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Featured Laptops -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <h2>Featured Laptops</h2>
+                <hr>
+            </div>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-3 g-4 mb-4">
+            <div class="col" th:each="laptop : ${laptops}" th:if="${laptopStat.index < 3}">
+                <div class="card h-100 laptop-card">
+                    <div class="text-center pt-3">
+                        <div class="laptop-image-container">
+                            <img th:src="${laptop.imagePath}" class="card-img-top" alt="Laptop Image">
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${laptop.brand + ' ' + laptop.model}">Laptop Name</h5>
+                        <p class="card-text" th:text="${#strings.abbreviate(laptop.description, 100)}">Description</p>
+                        <p class="fw-bold" th:text="'$' + ${laptop.price}">$1299.99</p>
+                        <div class="d-grid gap-2">
+                            <a th:href="@{/laptops/{id}(id=${laptop.id})}" class="btn btn-outline-primary">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Why Choose Us -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <h2>Why Choose Us</h2>
+                <hr>
+            </div>
+            <div class="col-md-4 text-center">
+                <i class="fas fa-shipping-fast fa-3x mb-3"></i>
+                <h4>Fast Shipping</h4>
+                <p>Get your new laptop delivered quickly to your doorstep.</p>
+            </div>
+            <div class="col-md-4 text-center">
+                <i class="fas fa-check-circle fa-3x mb-3"></i>
+                <h4>Quality Guarantee</h4>
+                <p>All our products are genuine with full manufacturer warranty.</p>
+            </div>
+            <div class="col-md-4 text-center">
+                <i class="fas fa-headset fa-3x mb-3"></i>
+                <h4>Customer Support</h4>
+                <p>Our support team is available 24/7 to help you with any questions.</p>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
