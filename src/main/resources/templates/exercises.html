@@ -136,8 +136,40 @@
             <div class="exercise-item card mt-2">
                 <div class="card-body">
                     <div class="d-flex align-items-center">
-                        <h5 class="exercise-title mb-0 flex-grow-1">Refactor DataLoader for Better Code Quality</h5>
+                        <h5 class="exercise-title mb-0 flex-grow-1">Fix Multi-Product Cart Bug</h5>
                         <input class="exercise-checkbox" type="checkbox" id="exercise4">
+                    </div>
+                    <div class="exercise-description">
+                        <p>There's a bug in the shopping cart that prevents adding both laptops and mice separately:</p>
+                        <ul>
+                            <li>When you add a mouse to your cart, then try to add a laptop, it increases the mouse quantity instead</li>
+                            <li>The problem occurs because items are identified only by ID, without considering product type</li>
+                            <li>If a mouse with ID 1 and a laptop with ID 1 exist, they're treated as the same product</li>
+                            <li>Fix the cart functionality to properly handle multiple product types</li>
+                        </ul>
+                        <p><strong>Files to modify:</strong></p>
+                        <ul>
+                            <li>src/main/resources/templates/laptops/details.html - Update the cart JavaScript</li>
+                            <li>src/main/resources/templates/mouse/details.html - Implement cart with type field</li>
+                            <li>src/main/resources/templates/cart.html - Ensure display and checkout handle types</li>
+                        </ul>
+                        <p><strong>Implementation Tips:</strong></p>
+                        <ul>
+                            <li>Add a "type" field to cart items ("laptop" or "mouse")</li>
+                            <li>Update the existingItem check to match both ID and type</li>
+                            <li>Modify the cart display to show product type information</li>
+                            <li>Update the checkout process to handle different product types</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Exercise 5 -->
+            <div class="exercise-item card mt-2">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <h5 class="exercise-title mb-0 flex-grow-1">Refactor DataLoader for Better Code Quality</h5>
+                        <input class="exercise-checkbox" type="checkbox" id="exercise5">
                     </div>
                     <div class="exercise-description">
                         <p>The DataLoader class contains a lot of repetitive code. Refactor it to improve code quality:</p>
@@ -153,12 +185,12 @@
                 </div>
             </div>
             
-            <!-- Exercise 5 -->
+            <!-- Exercise 6 -->
             <div class="exercise-item card mt-2">
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <h5 class="exercise-title mb-0 flex-grow-1">Add a New Accessory Category</h5>
-                        <input class="exercise-checkbox" type="checkbox" id="exercise5">
+                        <input class="exercise-checkbox" type="checkbox" id="exercise6">
                     </div>
                     <div class="exercise-description">
                         <p>Implement a new accessory category (keyboards or headsets) following the same pattern as the Mouse implementation:</p>
@@ -183,12 +215,12 @@
                 </div>
             </div>
             
-            <!-- Exercise 6 -->
+            <!-- Exercise 7 -->
             <div class="exercise-item card mt-2">
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <h5 class="exercise-title mb-0 flex-grow-1">Add Unit and Integration Tests</h5>
-                        <input class="exercise-checkbox" type="checkbox" id="exercise6">
+                        <input class="exercise-checkbox" type="checkbox" id="exercise7">
                     </div>
                     <div class="exercise-description">
                         <p>Improve the test coverage of the application:</p>
